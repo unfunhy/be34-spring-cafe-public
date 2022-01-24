@@ -1,6 +1,11 @@
 package com.kakao.cafe.controller;
 
 import com.kakao.cafe.dto.article.ArticleCreationDto;
+<<<<<<< HEAD
+=======
+import com.kakao.cafe.dto.article.ArticleDto;
+import com.kakao.cafe.dto.reply.ReplyDto;
+>>>>>>> 00b87681 (스프링 카페 2-3 단계 구현 (cuz.be) (#697))
 import com.kakao.cafe.service.ArticleService;
 import com.kakao.cafe.service.ReplyService;
 import com.kakao.cafe.util.SessionIdRequired;
