@@ -4,24 +4,19 @@ import com.kakao.cafe.domain.Article;
 import com.kakao.cafe.dto.article.ArticleCreationDto;
 import com.kakao.cafe.dto.article.ArticleDto;
 import com.kakao.cafe.repository.article.ArticleRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public ArticleService(ArticleRepository articleRepository, ModelMapper modelMapper) {
-        this.articleRepository = articleRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public long post(ArticleCreationDto dto) {
         Article newArticle = new Article(dto);
@@ -51,18 +46,22 @@ public class ArticleService {
     public List<ArticleDto> getAllArticles() {
         return articleRepository.findAll().stream()
                 .map(m -> modelMapper.map(m, ArticleDto.class))
+                .map(this::setUserNickname)
                 .collect(Collectors.toList());
     }
 
     public ArticleDto getById(long id) {
         return articleRepository.findById(id)
                 .map(m -> modelMapper.map(m, ArticleDto.class))
+                .map(this::setUserNickname)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
-    public String findNicknameById(long id) {
-        return articleRepository.findUserNicknameById(id)
+    private ArticleDto setUserNickname(ArticleDto dto) {
+        String nickname = articleRepository.findUserNicknameById(dto.getId())
                 .orElse("탈퇴한 사용자");
+        dto.setAuthor(nickname);
+        return dto;
     }
 
     private void validateAuth(long articleUid, long sessionUid) throws IllegalAccessException {

@@ -6,8 +6,8 @@ import com.kakao.cafe.service.UserService;
 import com.kakao.cafe.util.SessionIdRequired;
 import com.kakao.cafe.util.Url;
 import com.kakao.cafe.util.View;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -22,14 +22,10 @@ import javax.validation.Valid;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/users")
     public String getUserList(Model model) {

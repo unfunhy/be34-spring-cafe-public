@@ -83,7 +83,7 @@ public class JdbcArticleRepository implements ArticleRepository {
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("id", id);
         try {
             return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(
-                    FIND_NICKNAME_BY_USERID.query(), namedParameters, String.class));
+                    FIND_NICKNAME_BY_ARTICLEID.query(), namedParameters, String.class));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

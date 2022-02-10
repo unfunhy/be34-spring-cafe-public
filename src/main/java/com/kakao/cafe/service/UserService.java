@@ -4,8 +4,8 @@ import com.kakao.cafe.domain.User;
 import com.kakao.cafe.dto.user.UserCreationDto;
 import com.kakao.cafe.dto.user.UserDto;
 import com.kakao.cafe.repository.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public long join(UserCreationDto dto) throws IllegalArgumentException {
         User newUser = new User(dto);

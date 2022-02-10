@@ -1,12 +1,14 @@
 package com.kakao.cafe.dto.user;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
+@ToString
 public class UserCreationDto {
     @NotEmpty(message = "이메일은 필수 입력 값입니다")
     private String email;

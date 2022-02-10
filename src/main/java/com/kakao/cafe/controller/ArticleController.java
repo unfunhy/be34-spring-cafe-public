@@ -1,41 +1,31 @@
 package com.kakao.cafe.controller;
 
 import com.kakao.cafe.dto.article.ArticleCreationDto;
-import com.kakao.cafe.dto.article.ArticleDto;
-import com.kakao.cafe.dto.reply.ReplyDto;
 import com.kakao.cafe.service.ArticleService;
 import com.kakao.cafe.service.ReplyService;
 import com.kakao.cafe.util.SessionIdRequired;
 import com.kakao.cafe.util.Url;
 import com.kakao.cafe.util.View;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.util.stream.Collectors;
 
-@Slf4j
 @Controller
+@Slf4j
+@RequiredArgsConstructor
 public class ArticleController {
 
     private final ArticleService articleService;
     private final ReplyService replyService;
 
-    @Autowired
-    public ArticleController(ArticleService articleService, ReplyService replyService) {
-        this.articleService = articleService;
-        this.replyService = replyService;
-    }
-
     @GetMapping("/articles")
     public String getAllArticle(Model model) {
-        var articleList = articleService.getAllArticles().stream()
-                .map(this::setAuthorNickname)
-                .collect(Collectors.toList());
+        var articleList = articleService.getAllArticles();
         model.addAttribute("articleList", articleList);
         model.addAttribute("articleListSize", articleList.size());
         return View.INDEX;
@@ -59,11 +49,8 @@ public class ArticleController {
     @SessionIdRequired
     @GetMapping("/articles/{id}")
     public String getArticlePage(@PathVariable long id, HttpSession session, Model model) {
-        var article = setAuthorNickname(articleService.getById(id));
+        var article = articleService.getById(id);
         var replyList = replyService.findAllReplyByArticleId(id);
-        replyList = replyList.stream()
-                .map(reply -> getCompleteDto(session, reply))
-                .collect(Collectors.toList());
         model.addAttribute("article", article);
         model.addAttribute("canEdit", canEdit(session, article.getUserId()));
         model.addAttribute("replyList", replyList);
@@ -82,7 +69,7 @@ public class ArticleController {
     @SessionIdRequired
     @GetMapping("/articles/form/{id}")
     public String getUpdateForm(@PathVariable long id, RedirectAttributes attr) {
-        var article = setAuthorNickname(articleService.getById(id));
+        var article = articleService.getById(id);
         attr.addFlashAttribute("article", article);
         return "redirect:" + Url.ARTICLES_FORM;
     }
@@ -109,18 +96,6 @@ public class ArticleController {
     public String deleteReply(@PathVariable long articleId, @PathVariable long id, HttpSession session) {
         replyService.delete(id);
         return "redirect:/articles/" +articleId;
-    }
-
-    private ArticleDto setAuthorNickname(ArticleDto article) {
-        long authorId = article.getUserId();
-        article.setAuthor(articleService.findNicknameById(authorId));
-        return article;
-    }
-
-    private ReplyDto getCompleteDto(HttpSession session, ReplyDto reply) {
-        reply.setCanEdit(canEdit(session, reply.getUserId()));
-        reply.setNickname(replyService.findUserNicknameById(reply.getId()));
-        return reply;
     }
 
     private boolean canEdit(HttpSession session, long userId) {

@@ -5,7 +5,7 @@ public enum SqlReply {
     DELETE_REPLY("DELETE FROM `REPLY` WHERE id = :id"),
     DELETE_REPLY_BY_ARTICLEID("DELETE FROM `REPLY` WHERE articleId = :articleId"),
     FIND_ALL_REPLY("SELECT * FROM `REPLY` WHERE articleId = :articleId"),
-    FIND_NICKNAME_BY_USERID("SELECT USER.nickname FROM `REPLY` JOIN `USER` ON USER.id = REPLY.userId WHERE REPLY.id = :id");
+    FIND_NICKNAME_BY_REPLYID("SELECT USER.nickname FROM `REPLY` JOIN `USER` ON USER.id = REPLY.userId WHERE REPLY.id = :id");
 
     private final String QUERY;
 

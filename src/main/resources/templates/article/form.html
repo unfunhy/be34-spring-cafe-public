@@ -39,7 +39,7 @@
                     <textarea class="form-control" id="body" name="body" placeholder="내용을 입력하세요">{{#article}}{{body}}{{/article}}</textarea>
                 </div>
             </div>
-            {{&article}}
+            {{^article}}
             <input class="post-write-btn" type="submit" value="등록"/>
             {{/article}}
             {{#article}}
